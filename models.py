@@ -1,5 +1,5 @@
 from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, RidgeClassifier, SGDClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, ExtraTreesClassifier
 from sklearn.svm import SVC, LinearSVC
 from sklearn.neighbors import KNeighborsClassifier
@@ -25,5 +25,16 @@ models = {
     "Quadratic Discriminant Analysis": QuadraticDiscriminantAnalysis(),
     "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss'),
     "LightGBM": LGBMClassifier(),
-    "CatBoost": CatBoostClassifier(verbose=0)  # verbose=0 to silence CatBoost output
+    "CatBoost": CatBoostClassifier(verbose=0),  # verbose=0 to silence CatBoost output
+    "Ridge Classifier": RidgeClassifier(),
+    "SGD Classifier": SGDClassifier(max_iter=1000, tol=1e-3)
 }
+
+# Evaluate each model
+for name, model in models.items():
+    cv_scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+    print(f"{name} accuracy: {np.mean(cv_scores):.4f}")
+
+# Choose the best model based on cross-validation accuracy
+best_model_name, best_model = max(models.items(), key=lambda x: np.mean(cross_val_score(x[1], X, y, cv=5, scoring='accuracy')))
+best_model_accuracy = np.mean(cross_val_score
